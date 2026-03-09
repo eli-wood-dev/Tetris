@@ -1,0 +1,14 @@
+#canvas-container{
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+#canvas{
+    background-color: black;
+}
+
+#title{
+    text-align: center;
+}
