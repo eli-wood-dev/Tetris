@@ -2,7 +2,9 @@ window.addEventListener("load", ()=>{
     const tilesAcross = 10;
     const tilesTall = 18;//gameboy size
 
-    const tickInterval = 500;
+    const tickInterval = 20;
+    let fallFrequency = 25
+    let frame = 0;
 
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
@@ -16,33 +18,71 @@ window.addEventListener("load", ()=>{
 
     let staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
 
-    staticBlocks[17][5] = new Block(17,5,"rgb(255,0,0)", "rgb(136, 0, 0)");
-    staticBlocks[17][4] = new Block(17,4,"rgb(255,0,0)", "rgb(136, 0, 0)")
-    staticBlocks[16][4] = new Block(16,4,"rgb(255,0,0)", "rgb(136, 0, 0)")
-    staticBlocks[16][3] = new Block(16,3,"rgb(255,0,0)", "rgb(136, 0, 0)")
+    // staticBlocks[17][5] = new Block(17,5,"rgb(255,0,0)", "rgb(136, 0, 0)");
+    // staticBlocks[17][4] = new Block(17,4,"rgb(255,0,0)", "rgb(136, 0, 0)")
+    // staticBlocks[16][4] = new Block(16,4,"rgb(255,0,0)", "rgb(136, 0, 0)")
+    // staticBlocks[16][3] = new Block(16,3,"rgb(255,0,0)", "rgb(136, 0, 0)")
 
-    staticBlocks[17][3] = new Block(17,3,"rgb(0,0,255)", "rgb(0, 0, 136)")
-    staticBlocks[17][2] = new Block(17,2,"rgb(0,0,255)", "rgb(0, 0, 136)")
-    staticBlocks[17][1] = new Block(17,1,"rgb(0,0,255)", "rgb(0, 0, 136)")
-    staticBlocks[17][0] = new Block(17,0,"rgb(0,0,255)", "rgb(0, 0, 136)")
+    // staticBlocks[17][3] = new Block(17,3,"rgb(0,0,255)", "rgb(0, 0, 136)")
+    // staticBlocks[17][2] = new Block(17,2,"rgb(0,0,255)", "rgb(0, 0, 136)")
+    // staticBlocks[17][1] = new Block(17,1,"rgb(0,0,255)", "rgb(0, 0, 136)")
+    // staticBlocks[17][0] = new Block(17,0,"rgb(0,0,255)", "rgb(0, 0, 136)")
 
-    staticBlocks[17][6] = new Block(17,6,"rgb(0,255,0)", "rgb(0, 136, 0)")
-    staticBlocks[17][7] = new Block(17,7,"rgb(0,255,0)", "rgb(0, 136, 0)")
-    staticBlocks[17][8] = new Block(17,8,"rgb(0,255,0)", "rgb(0, 136, 0)")
-    staticBlocks[17][9] = new Block(17,9,"rgb(0,255,0)", "rgb(0, 136, 0)")
+    // staticBlocks[17][6] = new Block(17,6,"rgb(0,255,0)", "rgb(0, 136, 0)")
+    // staticBlocks[17][7] = new Block(17,7,"rgb(0,255,0)", "rgb(0, 136, 0)")
+    // staticBlocks[17][8] = new Block(17,8,"rgb(0,255,0)", "rgb(0, 136, 0)")
+    // staticBlocks[17][9] = new Block(17,9,"rgb(0,255,0)", "rgb(0, 136, 0)")
 
-    setInterval(tick, tickInterval)
+    let gameInterval;
+    gameInterval = setInterval(()=>{
+        if(fb.gamePossible){
+            tick();
+        } else{
+            console.log("Game Over")
+            clearInterval(gameInterval)
+        }
+    }, tickInterval)
+
+    let fb = new FallingBlock(Math.floor(Math.random()*7))
 
     function tick(){
+        frame++;
+
         clearScreen(c, ctx)
 
         //handle falling blocks
+        if(frame % fallFrequency == 0){
+            let success = fb.fall(staticBlocks)
+
+            if(!success){
+                fb.reset(Math.floor(Math.random()*7))
+            }
+        }
+
+        fb.draw(ctx, tileSize, 2)
 
         //handle static blocks
         removeRows(staticBlocks, checkRows(staticBlocks))
         fixDisplayRows(staticBlocks)
         drawBlocks(ctx, staticBlocks, tileSize)
+        
     }
+
+    //temporary
+    document.addEventListener("keydown", (ev)=>{
+        if(ev.key === "ArrowLeft"){
+            fb.move(-1, staticBlocks)
+        }
+        if(ev.key === "ArrowRight"){
+            fb.move(1, staticBlocks)
+        }
+        if(ev.key === "q"){
+            fb.rotate(false)
+        }
+        if(ev.key === "e"){
+            fb.rotate(true)
+        }
+    })
 })
 
 function drawBlocks(ctx, blocks, size){
