@@ -15,6 +15,16 @@ class Block{
         ctx.fillRect(realX, realY, tileSize, tileSize)
         ctx.strokeRect(realX+borderWidth/2, realY+borderWidth/2, tileSize-borderWidth, tileSize-borderWidth)
     }
+
+    static draw(ctx, tileSize, borderWidth, row, col, colour, borderColour){
+        ctx.fillStyle = colour
+        ctx.strokeStyle = borderColour
+        ctx.lineWidth = borderWidth;
+        let realX = col * tileSize
+        let realY = row * tileSize
+        ctx.fillRect(realX, realY, tileSize, tileSize)
+        ctx.strokeRect(realX+borderWidth/2, realY+borderWidth/2, tileSize-borderWidth, tileSize-borderWidth)
+    }
 }
 
 class FallingBlock{

@@ -13,6 +13,8 @@ window.addEventListener("load", ()=>{
 
     let score = 0;
 
+    let fastFalling = false;
+
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
 
@@ -68,6 +70,10 @@ window.addEventListener("load", ()=>{
                     levelDisplay.text = "Level " + level;
                 }
             }
+
+            if(fastFalling){
+                score++
+            }
         }
 
         fb.draw(ctx, tileSize, 2)
@@ -75,7 +81,7 @@ window.addEventListener("load", ()=>{
         //handle static blocks
         let toRemove = checkRows(staticBlocks)
         if(toRemove.length >= 1){
-            score += toRemove.length * 1000 * level
+            score += toRemove.length * 100 * level
         }
 
         scoreDisplay.setTextNumber(score, 8);
@@ -107,7 +113,12 @@ window.addEventListener("load", ()=>{
                 fb.move(1, staticBlocks)
             }
             if(ev.key === "ArrowUp"){
-                while(fb.fall(staticBlocks));
+                while(fb.fall(staticBlocks)){
+                    score += 2;
+                }
+
+                scoreDisplay.setTextNumber(score, 8);
+
                 fb.reset(Math.floor(Math.random()*7))
                 totalBlocks++;
 
@@ -121,6 +132,7 @@ window.addEventListener("load", ()=>{
                 if(!ev.repeat){//first time only
                     fallFrequency = Math.round(fallFrequency/10);
                 }
+                fastFalling = true;
             }
             if(ev.key === "q"){
                 fb.rotate(false, staticBlocks)
@@ -133,16 +145,19 @@ window.addEventListener("load", ()=>{
         document.addEventListener("keyup", (ev)=>{
             if(ev.key === "ArrowDown"){
                 fallFrequency = baseFallFrequency - (level-1);
+                fastFalling = false;
             }
         })
     }
 })
 
 function drawBlocks(ctx, blocks, size){
-    for (col of blocks){
-        for (block of col){
-            if(block !== null){
-                block.draw(ctx, size, 2)
+    for (let i = 0; i < blocks.length; i++){
+        for (let j = 0; j < blocks[i].length; j++){
+            if(blocks[i][j] !== null){
+                blocks[i][j].draw(ctx, size, 2)
+            } else {
+                Block.draw(ctx, size, 2, i, j, "rgba(0, 0, 0, 0)", "rgb(50, 50, 50)")
             }
         }
     }
