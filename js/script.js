@@ -3,8 +3,15 @@ window.addEventListener("load", ()=>{
     const tilesTall = 18;//gameboy size
 
     const tickInterval = 20;
-    let fallFrequency = 25
+    const baseFallFrequency = 25;
+    let fallFrequency = baseFallFrequency;
+    const maxLevel = 16;
+    let level = 1;
+    let levelIncreaseFrequency = 10;
+    let totalBlocks = 1;
     let frame = 0;
+
+    let score = 0;
 
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
@@ -45,6 +52,11 @@ window.addEventListener("load", ()=>{
 
     let fb = new FallingBlock(Math.floor(Math.random()*7))
 
+    let scoreDisplay = new Text("", 0, 0, "rgb(255,255,255)", 24)
+    scoreDisplay.setTextNumber(score, 8);
+
+    let levelDisplay = new Text("Level 1", 0, 30, "rgb(255,255,255)", 24)
+
     function tick(){
         frame++;
 
@@ -56,16 +68,32 @@ window.addEventListener("load", ()=>{
 
             if(!success){
                 fb.reset(Math.floor(Math.random()*7))
+                totalBlocks++;
+
+                if(totalBlocks % levelIncreaseFrequency == 0){
+                    level = Math.min(level+1, maxLevel);
+                    fallFrequency = baseFallFrequency - (level-1);
+                    levelDisplay.text = "Level " + level;
+                }
             }
         }
 
         fb.draw(ctx, tileSize, 2)
 
         //handle static blocks
-        removeRows(staticBlocks, checkRows(staticBlocks))
+        let toRemove = checkRows(staticBlocks)
+        if(toRemove.length >= 1){
+            score += toRemove.length * 1000 * level
+        }
+
+        scoreDisplay.setTextNumber(score, 8);
+
+        removeRows(staticBlocks, toRemove)
         fixDisplayRows(staticBlocks)
         drawBlocks(ctx, staticBlocks, tileSize)
         
+        scoreDisplay.draw(ctx)
+        levelDisplay.draw(ctx)
     }
 
     //temporary
@@ -76,11 +104,25 @@ window.addEventListener("load", ()=>{
         if(ev.key === "ArrowRight"){
             fb.move(1, staticBlocks)
         }
+        if(ev.key === "ArrowUp"){
+            while(fb.fall(staticBlocks));
+        }
+        if(ev.key === "ArrowDown"){
+            if(!ev.repeat){//first time only
+                fallFrequency = Math.round(fallFrequency/10);
+            }
+        }
         if(ev.key === "q"){
-            fb.rotate(false)
+            fb.rotate(false, staticBlocks)
         }
         if(ev.key === "e"){
-            fb.rotate(true)
+            fb.rotate(true, staticBlocks)
+        }
+    })
+
+    document.addEventListener("keyup", (ev)=>{
+        if(ev.key === "ArrowDown"){
+            fallFrequency = baseFallFrequency - (level-1);
         }
     })
 })
@@ -117,7 +159,7 @@ function checkRows(blocks){
 }
 
 function removeRows(blocks, rows){
-    for (row of rows){
+    for (const row of rows){
         removeRow(blocks, row)
     }
     fixDisplayRows(blocks)

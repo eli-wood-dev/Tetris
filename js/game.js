@@ -177,7 +177,7 @@ class FallingBlock{
         return true
     }
 
-    rotate(right=true){
+    rotate(right, staticBlocks){
         const n = this.matrix.length;
 
         const transpose = ()=>{
@@ -203,6 +203,26 @@ class FallingBlock{
         }
 
         this.fixBlockPlacements()
+
+        //check if inside block, if so undo rotation
+        let possible = true;
+
+        for (const row of this.matrix){
+            for (const block of row) {
+                if(block === null){
+                    continue;
+                }
+
+                if(block.col < 0 || block.col > staticBlocks[0].length || (block.row >= 0 && staticBlocks[Math.max(block.row, 0)][block.col] !== null)){
+                    possible = false;
+                }
+            }
+        }
+
+        if(!possible){
+            this.rotate(!right, staticBlocks)//undo
+        }
+        //may fail if the block tries to rotate from an impossible position to another impossible position
     }
 
     fixBlockPlacements(){
@@ -225,5 +245,31 @@ class FallingBlock{
                 }
             }
         }
+    }
+}
+
+class Text{
+    constructor(text, x, y, colour, size){
+        this.text = text;
+        this.colour = colour;
+        this.x = x;
+        this.y = y;
+        this.size = size;
+    }
+
+    
+    setTextNumber(num, minLength){
+        const formattedNum = num.toLocaleString('en-US', {
+            minimumIntegerDigits: minLength,
+            useGrouping: false
+        });
+        this.text = formattedNum;
+    }
+
+    draw(ctx){
+        ctx.font = this.size + "px sans-serif";
+        ctx.fillStyle = this.colour;
+        ctx.textBaseline = "hanging";
+        ctx.fillText(this.text, this.x, this.y);
     }
 }
