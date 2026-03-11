@@ -38,22 +38,16 @@ window.addEventListener("load", ()=>{
 
     let staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
 
-    let gameInterval;
-    gameInterval = setInterval(()=>{
-        if(fb.gamePossible){
-            tick();
-        } else{
-            console.log("Game Over")
-            clearInterval(gameInterval)
-        }
-    }, tickInterval)
-
     let fb = new FallingBlock(Math.floor(Math.random()*7))
 
     let scoreDisplay = new Text("", 0, 5, "rgb(255,255,255)", 32)
     scoreDisplay.setTextNumber(score, 8);
 
     let levelDisplay = new Text("Level 1", 0, 40, "rgb(255,255,255)", 32)
+
+    let gameInterval;
+    
+    gameInit();
 
     function tick(){
         frame++;
@@ -94,43 +88,54 @@ window.addEventListener("load", ()=>{
         levelDisplay.draw(ctx)
     }
 
-    //temporary
-    document.addEventListener("keydown", (ev)=>{
-        if(ev.key === "ArrowLeft"){
-            fb.move(-1, staticBlocks)
-        }
-        if(ev.key === "ArrowRight"){
-            fb.move(1, staticBlocks)
-        }
-        if(ev.key === "ArrowUp"){
-            while(fb.fall(staticBlocks));
-            fb.reset(Math.floor(Math.random()*7))
-            totalBlocks++;
+    function gameInit(){
+        gameInterval = setInterval(()=>{
+            if(fb.gamePossible){
+                tick();
+            } else{
+                console.log("Game Over")
+                clearInterval(gameInterval)
+            }
+        }, tickInterval)
 
-            if(totalBlocks % levelIncreaseFrequency == 0){
-                level = Math.min(level+1, maxLevel);
+        //temporary
+        document.addEventListener("keydown", (ev)=>{
+            if(ev.key === "ArrowLeft"){
+                fb.move(-1, staticBlocks)
+            }
+            if(ev.key === "ArrowRight"){
+                fb.move(1, staticBlocks)
+            }
+            if(ev.key === "ArrowUp"){
+                while(fb.fall(staticBlocks));
+                fb.reset(Math.floor(Math.random()*7))
+                totalBlocks++;
+
+                if(totalBlocks % levelIncreaseFrequency == 0){
+                    level = Math.min(level+1, maxLevel);
+                    fallFrequency = baseFallFrequency - (level-1);
+                    levelDisplay.text = "Level " + level;
+                }
+            }
+            if(ev.key === "ArrowDown"){
+                if(!ev.repeat){//first time only
+                    fallFrequency = Math.round(fallFrequency/10);
+                }
+            }
+            if(ev.key === "q"){
+                fb.rotate(false, staticBlocks)
+            }
+            if(ev.key === "e"){
+                fb.rotate(true, staticBlocks)
+            }
+        })
+
+        document.addEventListener("keyup", (ev)=>{
+            if(ev.key === "ArrowDown"){
                 fallFrequency = baseFallFrequency - (level-1);
-                levelDisplay.text = "Level " + level;
             }
-        }
-        if(ev.key === "ArrowDown"){
-            if(!ev.repeat){//first time only
-                fallFrequency = Math.round(fallFrequency/10);
-            }
-        }
-        if(ev.key === "q"){
-            fb.rotate(false, staticBlocks)
-        }
-        if(ev.key === "e"){
-            fb.rotate(true, staticBlocks)
-        }
-    })
-
-    document.addEventListener("keyup", (ev)=>{
-        if(ev.key === "ArrowDown"){
-            fallFrequency = baseFallFrequency - (level-1);
-        }
-    })
+        })
+    }
 })
 
 function drawBlocks(ctx, blocks, size){
