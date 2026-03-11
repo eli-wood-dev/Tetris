@@ -6,48 +6,35 @@ window.addEventListener("load", ()=>{
     const baseFallFrequency = 25;
     let fallFrequency = baseFallFrequency;
     const maxLevel = 16;
-    let level = 1;
-    let levelIncreaseFrequency = 10;
-    let totalBlocks = 1;
-    let frame = 0;
 
-    let score = 0;
-
-    let fastFalling = false;
+    //declare variables for global use, initialized in gameInit
+    let staticBlocks
+    let fb
+    let scoreDisplay
+    let gameInterval;
+    let level
+    let levelDisplay
+    let levelIncreaseFrequency
+    let totalBlocks
+    let frame
+    let score
+    let fastFalling
 
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
 
     const dpr = window.devicePixelRatio || 1;
 
-    let maxWidth = canvasContainer.clientWidth * dpr;
-    let maxHeight = canvasContainer.clientHeight * dpr;
-
-    console.log(maxHeight)
-    console.log(maxWidth)
+    const maxWidth = canvasContainer.clientWidth * dpr;
+    const maxHeight = canvasContainer.clientHeight * dpr;
 
     const tileSize = Math.min(maxHeight/tilesTall, maxWidth/tilesAcross);
     c.width = tilesAcross * tileSize;
-    // const tileSize = c.width/tilesAcross//check for smallest of width*10 and height*18
     c.height = tilesTall * tileSize
-
 
     const ctx = c.getContext("2d")
 
-    // ctx.scale(dpr, dpr)
-
-    ctx.fillRect(0, 0, c.width, c.height);
-
-    let staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
-
-    let fb = new FallingBlock(Math.floor(Math.random()*7))
-
-    let scoreDisplay = new Text("", 0, 5, "rgb(255,255,255)", 32)
-    scoreDisplay.setTextNumber(score, 8);
-
-    let levelDisplay = new Text("Level 1", 0, 40, "rgb(255,255,255)", 32)
-
-    let gameInterval;
+    
     
     gameInit();
 
@@ -95,6 +82,26 @@ window.addEventListener("load", ()=>{
     }
 
     function gameInit(){
+        //initalize all global variables
+        fallFrequency = baseFallFrequency;
+        level = 1;
+        levelIncreaseFrequency = 10;
+        totalBlocks = 1;
+        frame = 0;
+        score = 0;
+        fastFalling = false;
+
+        ctx.fillRect(0, 0, c.width, c.height);
+
+        staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
+
+        fb = new FallingBlock(Math.floor(Math.random()*7))
+
+        scoreDisplay = new Text("", 0, 5, "rgb(255,255,255)", 32)
+        scoreDisplay.setTextNumber(score, 8);
+
+        levelDisplay = new Text("Level 1", 0, 40, "rgb(255,255,255)", 32)
+
         gameInterval = setInterval(()=>{
             if(fb.gamePossible){
                 tick();
