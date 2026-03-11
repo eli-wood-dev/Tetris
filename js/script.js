@@ -63,8 +63,6 @@ window.addEventListener("load", ()=>{
             }
         }
 
-        fb.draw(ctx, tileSize, 2)
-
         //handle static blocks
         let toRemove = checkRows(staticBlocks)
         if(toRemove.length >= 1){
@@ -76,6 +74,9 @@ window.addEventListener("load", ()=>{
         removeRows(staticBlocks, toRemove)
         fixDisplayRows(staticBlocks)
         drawBlocks(ctx, staticBlocks, tileSize)
+
+        //draw falling block after static blocks to preserve outline
+        fb.draw(ctx, tileSize, 2)
         
         scoreDisplay.draw(ctx)
         levelDisplay.draw(ctx)
