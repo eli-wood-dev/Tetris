@@ -106,6 +106,14 @@ window.addEventListener("load", ()=>{
         }
         if(ev.key === "ArrowUp"){
             while(fb.fall(staticBlocks));
+            fb.reset(Math.floor(Math.random()*7))
+            totalBlocks++;
+
+            if(totalBlocks % levelIncreaseFrequency == 0){
+                level = Math.min(level+1, maxLevel);
+                fallFrequency = baseFallFrequency - (level-1);
+                levelDisplay.text = "Level " + level;
+            }
         }
         if(ev.key === "ArrowDown"){
             if(!ev.repeat){//first time only
@@ -155,6 +163,9 @@ function checkRows(blocks){
             toRemove.push(i)
         }
     }
+    if(toRemove.length > 0){
+        console.log(toRemove)
+    }
     return toRemove
 }
 
@@ -166,7 +177,7 @@ function removeRows(blocks, rows){
 }
 
 function removeRow(blocks, row){
-    blocks.pop(row)
+    blocks.splice(row, 1)
     blocks.unshift(new Array(blocks[0].length).fill(null));
 }
 
