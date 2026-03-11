@@ -16,29 +16,27 @@ window.addEventListener("load", ()=>{
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
 
-    c.width = canvasContainer.clientWidth;
-    const tileSize = c.width/tilesAcross//check for smallest of width*10 and height*18
+    const dpr = window.devicePixelRatio || 1;
+
+    let maxWidth = canvasContainer.clientWidth * dpr;
+    let maxHeight = canvasContainer.clientHeight * dpr;
+
+    console.log(maxHeight)
+    console.log(maxWidth)
+
+    const tileSize = Math.min(maxHeight/tilesTall, maxWidth/tilesAcross);
+    c.width = tilesAcross * tileSize;
+    // const tileSize = c.width/tilesAcross//check for smallest of width*10 and height*18
     c.height = tilesTall * tileSize
 
+
     const ctx = c.getContext("2d")
+
+    // ctx.scale(dpr, dpr)
+
     ctx.fillRect(0, 0, c.width, c.height);
 
     let staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
-
-    // staticBlocks[17][5] = new Block(17,5,"rgb(255,0,0)", "rgb(136, 0, 0)");
-    // staticBlocks[17][4] = new Block(17,4,"rgb(255,0,0)", "rgb(136, 0, 0)")
-    // staticBlocks[16][4] = new Block(16,4,"rgb(255,0,0)", "rgb(136, 0, 0)")
-    // staticBlocks[16][3] = new Block(16,3,"rgb(255,0,0)", "rgb(136, 0, 0)")
-
-    // staticBlocks[17][3] = new Block(17,3,"rgb(0,0,255)", "rgb(0, 0, 136)")
-    // staticBlocks[17][2] = new Block(17,2,"rgb(0,0,255)", "rgb(0, 0, 136)")
-    // staticBlocks[17][1] = new Block(17,1,"rgb(0,0,255)", "rgb(0, 0, 136)")
-    // staticBlocks[17][0] = new Block(17,0,"rgb(0,0,255)", "rgb(0, 0, 136)")
-
-    // staticBlocks[17][6] = new Block(17,6,"rgb(0,255,0)", "rgb(0, 136, 0)")
-    // staticBlocks[17][7] = new Block(17,7,"rgb(0,255,0)", "rgb(0, 136, 0)")
-    // staticBlocks[17][8] = new Block(17,8,"rgb(0,255,0)", "rgb(0, 136, 0)")
-    // staticBlocks[17][9] = new Block(17,9,"rgb(0,255,0)", "rgb(0, 136, 0)")
 
     let gameInterval;
     gameInterval = setInterval(()=>{
@@ -52,10 +50,10 @@ window.addEventListener("load", ()=>{
 
     let fb = new FallingBlock(Math.floor(Math.random()*7))
 
-    let scoreDisplay = new Text("", 0, 0, "rgb(255,255,255)", 24)
+    let scoreDisplay = new Text("", 0, 5, "rgb(255,255,255)", 32)
     scoreDisplay.setTextNumber(score, 8);
 
-    let levelDisplay = new Text("Level 1", 0, 30, "rgb(255,255,255)", 24)
+    let levelDisplay = new Text("Level 1", 0, 40, "rgb(255,255,255)", 32)
 
     function tick(){
         frame++;
