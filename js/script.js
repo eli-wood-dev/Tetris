@@ -20,6 +20,8 @@ window.addEventListener("load", ()=>{
     let score
     let fastFalling
 
+    let gameActive = false;
+
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
 
@@ -32,9 +34,21 @@ window.addEventListener("load", ()=>{
     c.width = tilesAcross * tileSize;
     c.height = tilesTall * tileSize
 
-    const ctx = c.getContext("2d")
+    c.style.height = (tilesTall * tileSize)/dpr + "px";
+    c.style.width = (tilesAcross * tileSize)/dpr + "px";
 
-    
+    canvasContainer.style.height = (tilesTall * tileSize)/dpr + "px";
+
+    const controlContainer = document.querySelector("#controls-container")
+
+    controlContainer.style.width = (tilesAcross * tileSize)/dpr + "px";
+
+    const ctx = c.getContext("2d");
+
+    const arrowLeftBtn = document.querySelector("#arrow-left")
+    const arrowRightBtn = document.querySelector("#arrow-right")
+    const rotateLeftBtn = document.querySelector("#rotate-left")
+    const rotateRightBtn = document.querySelector("#rotate-right")
     
     gameInit();
 
@@ -92,6 +106,8 @@ window.addEventListener("load", ()=>{
         score = 0;
         fastFalling = false;
 
+        gameActive = true;
+
         ctx.fillRect(0, 0, c.width, c.height);
 
         staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
@@ -108,55 +124,121 @@ window.addEventListener("load", ()=>{
                 tick();
             } else{
                 console.log("Game Over")
+                gameActive = false;
                 clearInterval(gameInterval)
             }
         }, tickInterval)
+    }
 
-        //temporary
-        document.addEventListener("keydown", (ev)=>{
+    //define input functions to be used with ui or keyboard controls
+    function moveLeft(){
+        fb.move(-1, staticBlocks)
+    }
+    function moveRight(){
+        fb.move(1, staticBlocks)
+    }
+    function hardFall(){
+        while(fb.fall(staticBlocks)){
+            score += 2;
+        }
+
+        scoreDisplay.setTextNumber(score, 8);
+
+        fb.reset(Math.floor(Math.random()*7))
+        totalBlocks++;
+
+        if(totalBlocks % levelIncreaseFrequency == 0){
+            level = Math.min(level+1, maxLevel);
+            fallFrequency = baseFallFrequency - (level-1);
+            levelDisplay.text = "Level " + level;
+        }
+    }
+    /**
+     * Begins soft falling.
+     * Must only be called once when soft falling begins.
+     */
+    function softFallStart(){
+        fallFrequency = Math.round(fallFrequency/10);
+        fastFalling = true;
+    }
+    /**
+     * Stops soft falling.
+     */
+    function softFallEnd(){
+        fallFrequency = baseFallFrequency - (level-1);
+        fastFalling = false;
+    }
+    function rotateLeft(){
+        fb.rotate(false, staticBlocks)
+    }
+    function rotateRight(){
+        fb.rotate(true, staticBlocks)
+    }
+
+    document.addEventListener("keydown", (ev)=>{
+        //ignore user input when game is not being played
+        if(gameActive){
             if(ev.key === "ArrowLeft"){
-                fb.move(-1, staticBlocks)
+                moveLeft();
             }
             if(ev.key === "ArrowRight"){
-                fb.move(1, staticBlocks)
+                moveRight();
             }
             if(ev.key === "ArrowUp"){
-                while(fb.fall(staticBlocks)){
-                    score += 2;
-                }
-
-                scoreDisplay.setTextNumber(score, 8);
-
-                fb.reset(Math.floor(Math.random()*7))
-                totalBlocks++;
-
-                if(totalBlocks % levelIncreaseFrequency == 0){
-                    level = Math.min(level+1, maxLevel);
-                    fallFrequency = baseFallFrequency - (level-1);
-                    levelDisplay.text = "Level " + level;
-                }
+                hardFall();
             }
             if(ev.key === "ArrowDown"){
                 if(!ev.repeat){//first time only
-                    fallFrequency = Math.round(fallFrequency/10);
+                    softFallStart();
                 }
-                fastFalling = true;
             }
             if(ev.key === "q"){
-                fb.rotate(false, staticBlocks)
+                rotateLeft();
             }
             if(ev.key === "e"){
-                fb.rotate(true, staticBlocks)
+                rotateRight();
             }
-        })
+        }
+    })
 
-        document.addEventListener("keyup", (ev)=>{
+    document.addEventListener("keyup", (ev)=>{
+        if(gameActive){
             if(ev.key === "ArrowDown"){
-                fallFrequency = baseFallFrequency - (level-1);
-                fastFalling = false;
+                softFallEnd();
             }
-        })
-    }
+        }
+    })
+
+    arrowLeftBtn.addEventListener("click", ()=>{
+        if(gameActive){
+            moveLeft();
+        }
+    })
+
+    arrowRightBtn.addEventListener("click", ()=>{
+        if(gameActive){
+            moveRight();
+        }
+    })
+
+    rotateLeftBtn.addEventListener("click", ()=>{
+        if(gameActive){
+            rotateLeft();
+        }
+    })
+
+    rotateRightBtn.addEventListener("click", ()=>{
+        if(gameActive){
+            rotateRight();
+        }
+    })
+
+    //doesn't work on mobile for some reason
+    canvasContainer.addEventListener("dblclick", ()=>{
+        if(gameActive){
+            hardFall();
+        }
+    })
 })
 
 function drawBlocks(ctx, blocks, size){
@@ -188,9 +270,6 @@ function checkRows(blocks){
         if(remove){
             toRemove.push(i)
         }
-    }
-    if(toRemove.length > 0){
-        console.log(toRemove)
     }
     return toRemove
 }

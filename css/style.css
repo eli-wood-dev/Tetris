@@ -1,3 +1,8 @@
+body{
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
 #canvas-container{
     display: flex;
     justify-content: center;
@@ -9,12 +14,39 @@
 
 #canvas{
     background-color: black;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 #title{
     text-align: center;
+    margin: 0;
 }
 
-*{
-    font-family: sans-serif;
+#title-container{
+    display: flex;
+    align-items: center;
+    height: 10svh;
+    justify-content: center;
+}
+
+#controls-container{
+    display: flex;
+    align-items: center;
+    height: 10svh;
+    justify-content: space-between;
+    margin-left: 10%;
+    margin-right: 10%;
+    gap: 5%;
+}
+
+#controls-container img{
+    width: 28%;
+}
+
+#controls-container-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
