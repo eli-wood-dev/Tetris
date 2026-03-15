@@ -70,6 +70,10 @@ body{
     height: 80%;
 }
 
+#game{
+    height: 100vh;
+}
+
 .hidden{
     display: none !important;
 }

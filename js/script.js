@@ -64,12 +64,17 @@ window.addEventListener("load", ()=>{
 
     const replayBtn = document.querySelector("#replay-button")
 
+    const gameContainer = document.querySelector("#game")
+    const introContainer = document.querySelector("#intro")
+
     let highScores = localStorage.getItem("scores")
     if(highScores === null){
         highScores = []
     } else {
         highScores = JSON.parse(highScores)
     }
+
+    gameContainer.classList.add("hidden")
     
     gameInit();
 
@@ -119,6 +124,9 @@ window.addEventListener("load", ()=>{
 
     function gameInit(){
         //initalize all global variables
+        gameContainer.classList.remove("hidden")
+        introContainer.classList.add("hidden")
+
         fallFrequency = baseFallFrequency;
         level = 1;
         levelIncreaseFrequency = 10;
