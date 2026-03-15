@@ -22,6 +22,9 @@ window.addEventListener("load", ()=>{
 
     let gameActive = false;
 
+    let holdingTimer;
+    let holding = false;
+
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
 
@@ -123,6 +126,8 @@ window.addEventListener("load", ()=>{
         rotateRightBtn.classList.remove("hidden")
         arrowLeftBtn.classList.remove("hidden")
         arrowRightBtn.classList.remove("hidden")
+
+        holding = false;
 
         ctx.fillRect(0, 0, c.width, c.height);
 
@@ -306,6 +311,26 @@ window.addEventListener("load", ()=>{
         if(gameActive){
             hardFall();
         }
+    })
+
+    canvasContainer.addEventListener("touchstart", (ev)=>{
+        ev.preventDefault();
+        holdingTimer = setTimeout(()=>{
+            holding = true;
+            softFallStart();
+        }, 300)
+    })
+
+    canvasContainer.addEventListener("touchend", ()=>{
+        clearInterval(holdingTimer)
+        if(gameActive){
+            if(holding){
+                softFallEnd();
+            } else{
+                hardFall();
+            }
+        }
+        holding = false;
     })
 })
 
