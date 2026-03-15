@@ -20,6 +20,20 @@ body{
     object-fit: contain;
 }
 
+#intro-canvas-container{
+    display: flex;
+    justify-content: center;
+    height: 100svh;
+    width: 100vw;
+}
+
+#intro-canvas{
+    background-color: #0570D8;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
 #title{
     text-align: center;
     margin: 0;

@@ -7,6 +7,8 @@ window.addEventListener("load", ()=>{
     let fallFrequency = baseFallFrequency;
     const maxLevel = 16;
 
+    const introDuration = 5000; //5 seconds
+
     //declare variables for global use, initialized in gameInit
     let staticBlocks
     let fb
@@ -29,6 +31,9 @@ window.addEventListener("load", ()=>{
 
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
+
+    const introCanvas = document.querySelector("#intro-canvas")
+    const introCanvasContainer = document.querySelector("#intro-canvas-container")
 
     const dpr = window.devicePixelRatio || 1;
 
@@ -54,6 +59,11 @@ window.addEventListener("load", ()=>{
 
     const ctx = c.getContext("2d");
 
+    introCanvas.width = introCanvasContainer.clientWidth * dpr;
+    introCanvas.height = introCanvasContainer.clientHeight * dpr;
+
+    const introCtx = introCanvas.getContext("2d");
+
     const arrowLeftBtn = document.querySelector("#arrow-left")
     const arrowRightBtn = document.querySelector("#arrow-right")
     const rotateLeftBtn = document.querySelector("#rotate-left")
@@ -75,8 +85,42 @@ window.addEventListener("load", ()=>{
     }
 
     gameContainer.classList.add("hidden")
-    
-    gameInit();
+
+    //intro
+    // set timeout to transition to game
+    setTimeout(()=>{
+        gameInit();
+    }, introDuration)
+
+    const letterSpace = 44
+    const fontSize = 90;
+    let centerX = introCanvas.width/2
+    let centerY = introCanvas.height/2
+
+    //background T
+    introCtx.fillStyle = "rgb(43,44,124)"
+    introCtx.strokeStyle = "rgb(45,80,170)"
+    introCtx.lineWidth = 10;
+    introCtx.beginPath();
+    introCtx.moveTo(centerX-(letterSpace/2)-letterSpace*3, centerY-fontSize);
+    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace*3, centerY-fontSize);
+    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace*3, centerY+fontSize*3/4);
+    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace, centerY+fontSize*3/4);
+    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace, centerY+fontSize*1.75);
+    introCtx.lineTo(centerX-(letterSpace/2)-letterSpace, centerY+fontSize*1.75);
+    introCtx.lineTo(centerX-(letterSpace/2)-letterSpace, centerY+fontSize*3/4);
+    introCtx.lineTo(centerX-(letterSpace/2)-letterSpace*3, centerY+fontSize*3/4);
+    introCtx.closePath();
+    introCtx.fill();
+    introCtx.stroke();
+
+    //text
+    new Text("T", centerX-(letterSpace/2)-letterSpace*2, centerY-fontSize/2, "rgb(153, 0, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("E", centerX-(letterSpace/2)-letterSpace, centerY-fontSize/2, "rgb(255, 0, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("T", centerX-(letterSpace/2), centerY-fontSize/2, "rgb(153, 0, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("R", centerX+(letterSpace/2), centerY-fontSize/2, "rgb(255, 170, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("I", centerX+(letterSpace/2)+letterSpace, centerY-fontSize/2, "rgb(0, 255, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("S", centerX+(letterSpace/2)+letterSpace*2, centerY-fontSize/2, "rgb(0, 255, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
 
     function tick(){
         frame++;
