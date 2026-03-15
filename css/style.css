@@ -30,6 +30,13 @@ body{
     align-items: center;
     height: 10svh;
     justify-content: center;
+    position: relative;
+}
+
+#help-button {
+    position: absolute;
+    right: 0;
+    height: 50%;
 }
 
 #controls-container{
@@ -47,6 +54,12 @@ body{
 }
 
 #controls-container-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#title-container-container{
     display: flex;
     align-items: center;
     justify-content: center;

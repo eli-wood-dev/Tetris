@@ -25,6 +25,8 @@ window.addEventListener("load", ()=>{
     let holdingTimer;
     let holding = false;
 
+    let paused = false;
+
     const c = document.querySelector("#canvas")
     const canvasContainer = document.querySelector("#canvas-container")
 
@@ -46,12 +48,19 @@ window.addEventListener("load", ()=>{
 
     controlContainer.style.width = (tilesAcross * tileSize)/dpr + "px";
 
+    const titleContainer = document.querySelector("#title-container")
+
+    titleContainer.style.width = (tilesAcross * tileSize)/dpr + "px";
+
     const ctx = c.getContext("2d");
 
     const arrowLeftBtn = document.querySelector("#arrow-left")
     const arrowRightBtn = document.querySelector("#arrow-right")
     const rotateLeftBtn = document.querySelector("#rotate-left")
     const rotateRightBtn = document.querySelector("#rotate-right")
+    const pauseBtn = document.querySelector("#pause")
+
+    const helpBtn = document.querySelector("#help-button")
 
     const replayBtn = document.querySelector("#replay-button")
 
@@ -126,6 +135,7 @@ window.addEventListener("load", ()=>{
         rotateRightBtn.classList.remove("hidden")
         arrowLeftBtn.classList.remove("hidden")
         arrowRightBtn.classList.remove("hidden")
+        pauseBtn.classList.remove("hidden")
 
         holding = false;
 
@@ -140,6 +150,11 @@ window.addEventListener("load", ()=>{
 
         levelDisplay = new Text("Level 1", 0, 40, "rgb(255,255,255)", 32)
 
+        gameInterval = startGameInterval();
+    }
+
+    function startGameInterval(){
+        paused = false;
         gameInterval = setInterval(()=>{
             if(fb.gamePossible){
                 tick();
@@ -164,6 +179,7 @@ window.addEventListener("load", ()=>{
                     rotateRightBtn.classList.add("hidden")
                     arrowLeftBtn.classList.add("hidden")
                     arrowRightBtn.classList.add("hidden")
+                    pauseBtn.classList.add("hidden")
 
                     let title = new Text("High Scores", c.width/2, 5, "rgb(255,255,255)", 56, "center")
                     title.draw(ctx)
@@ -183,8 +199,9 @@ window.addEventListener("load", ()=>{
                             savedScore = highScores[i].score
                             level = highScores[i].level
                         }
-                        if(score == savedScore){
+                        if(score == savedScore && !hasShown){
                             textColour = "rgb(0, 225, 255)"
+                            hasShown = true;
                         }
                         let levelText = new Text("Level " + level, 0, 68 + i*scoreSize + i*scoreGap, textColour, scoreSize, "left")
                         levelText.draw(ctx)
@@ -197,6 +214,12 @@ window.addEventListener("load", ()=>{
                 }, 500)
             }
         }, tickInterval)
+        return gameInterval;
+    }
+
+    function pauseInterval(interval){
+        paused = true;
+        clearInterval(interval)
     }
 
     //define input functions to be used with ui or keyboard controls
@@ -243,6 +266,30 @@ window.addEventListener("load", ()=>{
     function rotateRight(){
         fb.rotate(true, staticBlocks)
     }
+    function togglePause(){
+        if(paused){
+            gameInterval = startGameInterval();
+            pauseBtn.src = "images/pause.svg"
+        } else{
+            pauseInterval(gameInterval)
+            let pausedText = new Text("PAUSED", c.width/2, c.height/2-26, "rgb(255,255,255)", 52, "center")
+            pausedText.draw(ctx)
+            pauseBtn.src = "images/resume.svg"
+        }
+    }
+
+    helpBtn.addEventListener("click", ()=>{
+        togglePause()
+        clearScreen(c, ctx);
+
+        new Text("CONTROLS", c.width/2, 5, "rgb(255,255,255)", 52, "center").draw(ctx)
+        new Text("Move: arrow keys or arrow buttons", c.width/2, 60, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Rotate: Q E or rotate buttons", c.width/2, 90, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Soft Fall: down arrow or press and hold", c.width/2, 120, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Hard Fall: up arrow or tap screen", c.width/2, 150, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Pause: P or pause button", c.width/2, 180, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Unpause or press help again to clear", c.width/2, 210, "rgb(255,255,255)", 24, "center").draw(ctx)
+    })
 
     replayBtn.addEventListener("click", ()=>{
         gameInit();
@@ -270,6 +317,9 @@ window.addEventListener("load", ()=>{
             }
             if(ev.key === "e"){
                 rotateRight();
+            }
+            if(ev.key === "p"){
+                togglePause()
             }
         }
     })
@@ -306,6 +356,10 @@ window.addEventListener("load", ()=>{
         }
     })
 
+    pauseBtn.addEventListener("click", ()=>{
+        togglePause()
+    })
+
     //doesn't work on mobile for some reason
     canvasContainer.addEventListener("dblclick", ()=>{
         if(gameActive){
@@ -333,6 +387,7 @@ window.addEventListener("load", ()=>{
         holding = false;
     })
 })
+
 
 function drawBlocks(ctx, blocks, size){
     for (let i = 0; i < blocks.length; i++){
