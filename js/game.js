@@ -259,12 +259,13 @@ class FallingBlock{
 }
 
 class Text{
-    constructor(text, x, y, colour, size){
+    constructor(text, x, y, colour, size, align="left"){
         this.text = text;
         this.colour = colour;
         this.x = x;
         this.y = y;
         this.size = size;
+        this.align = align
     }
 
     
@@ -280,6 +281,7 @@ class Text{
         ctx.font = this.size + "px sans-serif";
         ctx.fillStyle = this.colour;
         ctx.textBaseline = "hanging";
+        ctx.textAlign = this.align;
         ctx.fillText(this.text, this.x, this.y);
     }
 }

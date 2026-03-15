@@ -1,6 +1,7 @@
 body{
     font-family: sans-serif;
     box-sizing: border-box;
+    margin: 0;
 }
 
 #canvas-container{
@@ -49,4 +50,13 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#replay-button{
+    width: 100%;
+    height: 80%;
+}
+
+.hidden{
+    display: none !important;
 }

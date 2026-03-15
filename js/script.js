@@ -49,6 +49,15 @@ window.addEventListener("load", ()=>{
     const arrowRightBtn = document.querySelector("#arrow-right")
     const rotateLeftBtn = document.querySelector("#rotate-left")
     const rotateRightBtn = document.querySelector("#rotate-right")
+
+    const replayBtn = document.querySelector("#replay-button")
+
+    let highScores = localStorage.getItem("scores")
+    if(highScores === null){
+        highScores = []
+    } else {
+        highScores = JSON.parse(highScores)
+    }
     
     gameInit();
 
@@ -108,6 +117,13 @@ window.addEventListener("load", ()=>{
 
         gameActive = true;
 
+        replayBtn.classList.add("hidden")
+
+        rotateLeftBtn.classList.remove("hidden")
+        rotateRightBtn.classList.remove("hidden")
+        arrowLeftBtn.classList.remove("hidden")
+        arrowRightBtn.classList.remove("hidden")
+
         ctx.fillRect(0, 0, c.width, c.height);
 
         staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
@@ -123,9 +139,57 @@ window.addEventListener("load", ()=>{
             if(fb.gamePossible){
                 tick();
             } else{
-                console.log("Game Over")
+                // console.log("Game Over")
                 gameActive = false;
+                highScores.push({
+                    "score": score,
+                    "level": level
+                })
                 clearInterval(gameInterval)
+
+                highScores.sort((a, b) => b.score - a.score);
+
+                localStorage.setItem("scores", JSON.stringify(highScores));
+
+                setTimeout(()=>{
+                    clearScreen(c, ctx)
+
+                    replayBtn.classList.remove("hidden")
+                    rotateLeftBtn.classList.add("hidden")
+                    rotateRightBtn.classList.add("hidden")
+                    arrowLeftBtn.classList.add("hidden")
+                    arrowRightBtn.classList.add("hidden")
+
+                    let title = new Text("High Scores", c.width/2, 5, "rgb(255,255,255)", 56, "center")
+                    title.draw(ctx)
+
+                    let scoreSize = 36;
+                    let scoreGap = 6;
+
+                    let scoresToDisplay = Math.floor((c.height - 68)/(scoreSize+scoreGap))
+
+                    let hasShown = false;
+
+                    for(let i = 0; i < scoresToDisplay; i++){
+                        let savedScore = 0;
+                        let level = 1;
+                        let textColour = "rgb(255,255,255)"
+                        if(i < highScores.length){
+                            savedScore = highScores[i].score
+                            level = highScores[i].level
+                        }
+                        if(score == savedScore){
+                            textColour = "rgb(0, 225, 255)"
+                        }
+                        let levelText = new Text("Level " + level, 0, 68 + i*scoreSize + i*scoreGap, textColour, scoreSize, "left")
+                        levelText.draw(ctx)
+                        let scoreText = new Text("", c.width, 64 + i*scoreSize + i*scoreGap, textColour, scoreSize, "right")
+                        scoreText.setTextNumber(savedScore, 8)
+                        levelText.draw(ctx)
+                        scoreText.draw(ctx)
+                    }
+
+                }, 500)
             }
         }, tickInterval)
     }
@@ -174,6 +238,10 @@ window.addEventListener("load", ()=>{
     function rotateRight(){
         fb.rotate(true, staticBlocks)
     }
+
+    replayBtn.addEventListener("click", ()=>{
+        gameInit();
+    })
 
     document.addEventListener("keydown", (ev)=>{
         //ignore user input when game is not being played
