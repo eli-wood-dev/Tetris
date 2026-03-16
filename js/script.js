@@ -1,4 +1,9 @@
-window.addEventListener("load", ()=>{
+/**
+ * Eli Wood
+ * 2026-03-15
+ * Main script for game logic and view
+ */
+window.addEventListener("load", () => {
     const tilesAcross = 10;
     const tilesTall = 18;//gameboy size
 
@@ -40,22 +45,22 @@ window.addEventListener("load", ()=>{
     const maxWidth = canvasContainer.clientWidth * dpr;
     const maxHeight = canvasContainer.clientHeight * dpr;
 
-    const tileSize = Math.min(maxHeight/tilesTall, maxWidth/tilesAcross);
+    const tileSize = Math.min(maxHeight / tilesTall, maxWidth / tilesAcross);
     c.width = tilesAcross * tileSize;
     c.height = tilesTall * tileSize
 
-    c.style.height = (tilesTall * tileSize)/dpr + "px";
-    c.style.width = (tilesAcross * tileSize)/dpr + "px";
+    c.style.height = (tilesTall * tileSize) / dpr + "px";
+    c.style.width = (tilesAcross * tileSize) / dpr + "px";
 
-    canvasContainer.style.height = (tilesTall * tileSize)/dpr + "px";
+    canvasContainer.style.height = (tilesTall * tileSize) / dpr + "px";
 
     const controlContainer = document.querySelector("#controls-container")
 
-    controlContainer.style.width = (tilesAcross * tileSize)/dpr + "px";
+    controlContainer.style.width = (tilesAcross * tileSize) / dpr + "px";
 
     const titleContainer = document.querySelector("#title-container")
 
-    titleContainer.style.width = (tilesAcross * tileSize)/dpr + "px";
+    titleContainer.style.width = (tilesAcross * tileSize) / dpr + "px";
 
     const ctx = c.getContext("2d");
 
@@ -78,7 +83,7 @@ window.addEventListener("load", ()=>{
     const introContainer = document.querySelector("#intro")
 
     let highScores = localStorage.getItem("scores")
-    if(highScores === null){
+    if (highScores === null) {
         highScores = []
     } else {
         highScores = JSON.parse(highScores)
@@ -88,68 +93,71 @@ window.addEventListener("load", ()=>{
 
     //intro
     // set timeout to transition to game
-    setTimeout(()=>{
+    setTimeout(() => {
         gameInit();
     }, introDuration)
 
     const letterSpace = 44
     const fontSize = 90;
-    let centerX = introCanvas.width/2
-    let centerY = introCanvas.height/2
+    let centerX = introCanvas.width / 2
+    let centerY = introCanvas.height / 2
 
     //background T
     introCtx.fillStyle = "rgb(43,44,124)"
     introCtx.strokeStyle = "rgb(45,80,170)"
     introCtx.lineWidth = 10;
     introCtx.beginPath();
-    introCtx.moveTo(centerX-(letterSpace/2)-letterSpace*3, centerY-fontSize);
-    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace*3, centerY-fontSize);
-    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace*3, centerY+fontSize*3/4);
-    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace, centerY+fontSize*3/4);
-    introCtx.lineTo(centerX+(letterSpace/2)+letterSpace, centerY+fontSize*1.75);
-    introCtx.lineTo(centerX-(letterSpace/2)-letterSpace, centerY+fontSize*1.75);
-    introCtx.lineTo(centerX-(letterSpace/2)-letterSpace, centerY+fontSize*3/4);
-    introCtx.lineTo(centerX-(letterSpace/2)-letterSpace*3, centerY+fontSize*3/4);
+    introCtx.moveTo(centerX - (letterSpace / 2) - letterSpace * 3, centerY - fontSize);
+    introCtx.lineTo(centerX + (letterSpace / 2) + letterSpace * 3, centerY - fontSize);
+    introCtx.lineTo(centerX + (letterSpace / 2) + letterSpace * 3, centerY + fontSize * 3 / 4);
+    introCtx.lineTo(centerX + (letterSpace / 2) + letterSpace, centerY + fontSize * 3 / 4);
+    introCtx.lineTo(centerX + (letterSpace / 2) + letterSpace, centerY + fontSize * 1.75);
+    introCtx.lineTo(centerX - (letterSpace / 2) - letterSpace, centerY + fontSize * 1.75);
+    introCtx.lineTo(centerX - (letterSpace / 2) - letterSpace, centerY + fontSize * 3 / 4);
+    introCtx.lineTo(centerX - (letterSpace / 2) - letterSpace * 3, centerY + fontSize * 3 / 4);
     introCtx.closePath();
     introCtx.fill();
     introCtx.stroke();
 
     //text
-    new Text("T", centerX-(letterSpace/2)-letterSpace*2, centerY-fontSize/2, "rgb(153, 0, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
-    new Text("E", centerX-(letterSpace/2)-letterSpace, centerY-fontSize/2, "rgb(255, 0, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
-    new Text("T", centerX-(letterSpace/2), centerY-fontSize/2, "rgb(153, 0, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
-    new Text("R", centerX+(letterSpace/2), centerY-fontSize/2, "rgb(255, 170, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
-    new Text("I", centerX+(letterSpace/2)+letterSpace, centerY-fontSize/2, "rgb(0, 255, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
-    new Text("S", centerX+(letterSpace/2)+letterSpace*2, centerY-fontSize/2, "rgb(0, 255, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("T", centerX - (letterSpace / 2) - letterSpace * 2, centerY - fontSize / 2, "rgb(153, 0, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("E", centerX - (letterSpace / 2) - letterSpace, centerY - fontSize / 2, "rgb(255, 0, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("T", centerX - (letterSpace / 2), centerY - fontSize / 2, "rgb(153, 0, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("R", centerX + (letterSpace / 2), centerY - fontSize / 2, "rgb(255, 170, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("I", centerX + (letterSpace / 2) + letterSpace, centerY - fontSize / 2, "rgb(0, 255, 255)", fontSize, "center", "monospace", "bold").draw(introCtx)
+    new Text("S", centerX + (letterSpace / 2) + letterSpace * 2, centerY - fontSize / 2, "rgb(0, 255, 0)", fontSize, "center", "monospace", "bold").draw(introCtx)
 
-    function tick(){
+    /**
+     * Handles all logic that needs to be run continuously
+     */
+    function tick() {
         frame++;
 
         clearScreen(c, ctx)
 
         //handle falling blocks
-        if(frame % fallFrequency == 0){
+        if (frame % fallFrequency == 0) {
             let success = fb.fall(staticBlocks)
 
-            if(!success){
-                fb.reset(Math.floor(Math.random()*7))
+            if (!success) {
+                fb.reset(Math.floor(Math.random() * 7))
                 totalBlocks++;
 
-                if(totalBlocks % levelIncreaseFrequency == 0){
-                    level = Math.min(level+1, maxLevel);
-                    fallFrequency = baseFallFrequency - (level-1);
+                if (totalBlocks % levelIncreaseFrequency == 0) {
+                    level = Math.min(level + 1, maxLevel);
+                    fallFrequency = baseFallFrequency - (level - 1);
                     levelDisplay.text = "Level " + level;
                 }
             }
 
-            if(fastFalling){
+            if (fastFalling) {
                 score++
             }
         }
 
         //handle static blocks
         let toRemove = checkRows(staticBlocks)
-        if(toRemove.length >= 1){
+        if (toRemove.length >= 1) {
             score += toRemove.length * 100 * level
         }
 
@@ -161,12 +169,15 @@ window.addEventListener("load", ()=>{
 
         //draw falling block after static blocks to preserve outline
         fb.draw(ctx, tileSize, 2)
-        
+
         scoreDisplay.draw(ctx)
         levelDisplay.draw(ctx)
     }
 
-    function gameInit(){
+    /**
+     * handles all logic to initialize values and start main game loop
+     */
+    function gameInit() {
         //initalize all global variables
         gameContainer.classList.remove("hidden")
         introContainer.classList.add("hidden")
@@ -195,7 +206,7 @@ window.addEventListener("load", ()=>{
 
         staticBlocks = Array.from({ length: tilesTall }, () => new Array(tilesAcross).fill(null))
 
-        fb = new FallingBlock(Math.floor(Math.random()*7))
+        fb = new FallingBlock(Math.floor(Math.random() * 7))
 
         scoreDisplay = new Text("", 0, 5, "rgb(255,255,255)", 32)
         scoreDisplay.setTextNumber(score, 8);
@@ -205,13 +216,17 @@ window.addEventListener("load", ()=>{
         gameInterval = startGameInterval();
     }
 
-    function startGameInterval(){
+    /**
+     * starts the interval which runs gameticks. Used to start the game and resume from pausing
+     * @returns the id of the interval the game uses
+     */
+    function startGameInterval() {
         paused = false;
-        gameInterval = setInterval(()=>{
-            if(fb.gamePossible){
+        gameInterval = setInterval(() => {
+            if (fb.gamePossible) {
                 tick();
-            } else{
-                // console.log("Game Over")
+            } else {
+                //handle game over
                 gameActive = false;
                 highScores.push({
                     "score": score,
@@ -223,7 +238,8 @@ window.addEventListener("load", ()=>{
 
                 localStorage.setItem("scores", JSON.stringify(highScores));
 
-                setTimeout(()=>{
+                //transition to high score after a delay
+                setTimeout(() => {
                     clearScreen(c, ctx)
 
                     replayBtn.classList.remove("hidden")
@@ -233,31 +249,31 @@ window.addEventListener("load", ()=>{
                     arrowRightBtn.classList.add("hidden")
                     pauseBtn.classList.add("hidden")
 
-                    let title = new Text("High Scores", c.width/2, 5, "rgb(255,255,255)", 56, "center")
+                    let title = new Text("High Scores", c.width / 2, 5, "rgb(255,255,255)", 56, "center")
                     title.draw(ctx)
 
                     let scoreSize = 36;
                     let scoreGap = 6;
 
-                    let scoresToDisplay = Math.floor((c.height - 68)/(scoreSize+scoreGap))
+                    let scoresToDisplay = Math.floor((c.height - 68) / (scoreSize + scoreGap))
 
                     let hasShown = false;
 
-                    for(let i = 0; i < scoresToDisplay; i++){
+                    for (let i = 0; i < scoresToDisplay; i++) {
                         let savedScore = 0;
                         let level = 1;
                         let textColour = "rgb(255,255,255)"
-                        if(i < highScores.length){
+                        if (i < highScores.length) {
                             savedScore = highScores[i].score
                             level = highScores[i].level
                         }
-                        if(score == savedScore && !hasShown){
+                        if (score == savedScore && !hasShown) {
                             textColour = "rgb(0, 225, 255)"
                             hasShown = true;
                         }
-                        let levelText = new Text("Level " + level, 0, 68 + i*scoreSize + i*scoreGap, textColour, scoreSize, "left")
+                        let levelText = new Text("Level " + level, 0, 68 + i * scoreSize + i * scoreGap, textColour, scoreSize, "left")
                         levelText.draw(ctx)
-                        let scoreText = new Text("", c.width, 64 + i*scoreSize + i*scoreGap, textColour, scoreSize, "right")
+                        let scoreText = new Text("", c.width, 64 + i * scoreSize + i * scoreGap, textColour, scoreSize, "right")
                         scoreText.setTextNumber(savedScore, 8)
                         levelText.draw(ctx)
                         scoreText.draw(ctx)
@@ -269,170 +285,205 @@ window.addEventListener("load", ()=>{
         return gameInterval;
     }
 
-    function pauseInterval(interval){
+    /**
+     * Stops a specified interval and tells the game that it is currently paused
+     * @param {*} interval the id of the interval being paused
+     */
+    function pauseInterval(interval) {
         paused = true;
         clearInterval(interval)
     }
 
     //define input functions to be used with ui or keyboard controls
-    function moveLeft(){
+    /**
+     * moves the current block 1 space to the left
+     */
+    function moveLeft() {
         fb.move(-1, staticBlocks)
     }
-    function moveRight(){
+
+    /**
+     * moves the current block 1 space to the right
+     */
+    function moveRight() {
         fb.move(1, staticBlocks)
     }
-    function hardFall(){
-        while(fb.fall(staticBlocks)){
+
+    /**
+     * makes the current block repeatedly fall until it gets stopped.
+     * Automatically resets the current block
+     */
+    function hardFall() {
+        while (fb.fall(staticBlocks)) {
             score += 2;
         }
 
         scoreDisplay.setTextNumber(score, 8);
 
-        fb.reset(Math.floor(Math.random()*7))
+        fb.reset(Math.floor(Math.random() * 7))
         totalBlocks++;
 
-        if(totalBlocks % levelIncreaseFrequency == 0){
-            level = Math.min(level+1, maxLevel);
-            fallFrequency = baseFallFrequency - (level-1);
+        if (totalBlocks % levelIncreaseFrequency == 0) {
+            level = Math.min(level + 1, maxLevel);
+            fallFrequency = baseFallFrequency - (level - 1);
             levelDisplay.text = "Level " + level;
         }
     }
+
     /**
      * Begins soft falling.
      * Must only be called once when soft falling begins.
      */
-    function softFallStart(){
-        fallFrequency = Math.round(fallFrequency/10);
+    function softFallStart() {
+        fallFrequency = Math.round(fallFrequency / 10);
         fastFalling = true;
     }
     /**
      * Stops soft falling.
      */
-    function softFallEnd(){
-        fallFrequency = baseFallFrequency - (level-1);
+    function softFallEnd() {
+        fallFrequency = baseFallFrequency - (level - 1);
         fastFalling = false;
     }
-    function rotateLeft(){
+    /**
+     *rotates the current block counterclockwise
+     */
+    function rotateLeft() {
         fb.rotate(false, staticBlocks)
     }
-    function rotateRight(){
+    /**
+     *rotates the current block clockwise
+     */
+    function rotateRight() {
         fb.rotate(true, staticBlocks)
     }
-    function togglePause(){
-        if(paused){
+    /**
+     * toggles the game from paused to unpaused.
+     * Updates the pause button UI
+     */
+    function togglePause() {
+        if (paused) {
             gameInterval = startGameInterval();
             pauseBtn.src = "images/pause.svg"
-        } else{
+        } else {
             pauseInterval(gameInterval)
-            let pausedText = new Text("PAUSED", c.width/2, c.height/2-26, "rgb(255,255,255)", 52, "center")
+            let pausedText = new Text("PAUSED", c.width / 2, c.height / 2 - 26, "rgb(255,255,255)", 52, "center")
             pausedText.draw(ctx)
             pauseBtn.src = "images/resume.svg"
         }
     }
 
-    helpBtn.addEventListener("click", ()=>{
+    /**
+     * Pauses the game and shows the control help display
+     */
+    helpBtn.addEventListener("click", () => {
         togglePause()
         clearScreen(c, ctx);
 
-        new Text("CONTROLS", c.width/2, 5, "rgb(255,255,255)", 52, "center").draw(ctx)
-        new Text("Move: arrow keys or arrow buttons", c.width/2, 60, "rgb(255,255,255)", 24, "center").draw(ctx)
-        new Text("Rotate: Q E or rotate buttons", c.width/2, 90, "rgb(255,255,255)", 24, "center").draw(ctx)
-        new Text("Soft Fall: down arrow or press and hold", c.width/2, 120, "rgb(255,255,255)", 24, "center").draw(ctx)
-        new Text("Hard Fall: up arrow or tap screen", c.width/2, 150, "rgb(255,255,255)", 24, "center").draw(ctx)
-        new Text("Pause: P or pause button", c.width/2, 180, "rgb(255,255,255)", 24, "center").draw(ctx)
-        new Text("Unpause or press help again to clear", c.width/2, 210, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("CONTROLS", c.width / 2, 5, "rgb(255,255,255)", 52, "center").draw(ctx)
+        new Text("Move: arrow keys or arrow buttons", c.width / 2, 60, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Rotate: Q E or rotate buttons", c.width / 2, 90, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Soft Fall: down arrow or press and hold", c.width / 2, 120, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Hard Fall: up arrow or tap screen", c.width / 2, 150, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Pause: P or pause button", c.width / 2, 180, "rgb(255,255,255)", 24, "center").draw(ctx)
+        new Text("Unpause or press help again to clear", c.width / 2, 210, "rgb(255,255,255)", 24, "center").draw(ctx)
     })
 
-    replayBtn.addEventListener("click", ()=>{
+    //restart button
+    replayBtn.addEventListener("click", () => {
         gameInit();
     })
 
-    document.addEventListener("keydown", (ev)=>{
+    //handle keyboard input
+    document.addEventListener("keydown", (ev) => {
         //ignore user input when game is not being played
-        if(gameActive){
-            if(ev.key === "ArrowLeft"){
+        if (gameActive) {
+            if (ev.key === "ArrowLeft") {
                 moveLeft();
             }
-            if(ev.key === "ArrowRight"){
+            if (ev.key === "ArrowRight") {
                 moveRight();
             }
-            if(ev.key === "ArrowUp"){
+            if (ev.key === "ArrowUp") {
                 hardFall();
             }
-            if(ev.key === "ArrowDown"){
-                if(!ev.repeat){//first time only
+            if (ev.key === "ArrowDown") {
+                if (!ev.repeat) {//first time only
                     softFallStart();
                 }
             }
-            if(ev.key === "q"){
+            if (ev.key === "q") {
                 rotateLeft();
             }
-            if(ev.key === "e"){
+            if (ev.key === "e") {
                 rotateRight();
             }
-            if(ev.key === "p"){
+            if (ev.key === "p") {
                 togglePause()
             }
         }
     })
 
-    document.addEventListener("keyup", (ev)=>{
-        if(gameActive){
-            if(ev.key === "ArrowDown"){
+    //handle softfall release
+    document.addEventListener("keyup", (ev) => {
+        if (gameActive) {
+            if (ev.key === "ArrowDown") {
                 softFallEnd();
             }
         }
     })
 
-    arrowLeftBtn.addEventListener("click", ()=>{
-        if(gameActive){
+    //handle UI button inputs
+    arrowLeftBtn.addEventListener("click", () => {
+        if (gameActive) {
             moveLeft();
         }
     })
 
-    arrowRightBtn.addEventListener("click", ()=>{
-        if(gameActive){
+    arrowRightBtn.addEventListener("click", () => {
+        if (gameActive) {
             moveRight();
         }
     })
 
-    rotateLeftBtn.addEventListener("click", ()=>{
-        if(gameActive){
+    rotateLeftBtn.addEventListener("click", () => {
+        if (gameActive) {
             rotateLeft();
         }
     })
 
-    rotateRightBtn.addEventListener("click", ()=>{
-        if(gameActive){
+    rotateRightBtn.addEventListener("click", () => {
+        if (gameActive) {
             rotateRight();
         }
     })
 
-    pauseBtn.addEventListener("click", ()=>{
+    pauseBtn.addEventListener("click", () => {
         togglePause()
     })
 
     //doesn't work on mobile for some reason
-    canvasContainer.addEventListener("dblclick", ()=>{
-        if(gameActive){
+    canvasContainer.addEventListener("dblclick", () => {
+        if (gameActive) {
             hardFall();
         }
     })
 
-    canvasContainer.addEventListener("touchstart", (ev)=>{
+    //touch controls on mobile
+    canvasContainer.addEventListener("touchstart", (ev) => {
         ev.preventDefault();
-        holdingTimer = setTimeout(()=>{
+        holdingTimer = setTimeout(() => {
             holding = true;
             softFallStart();
         }, 300)
     })
 
-    canvasContainer.addEventListener("touchend", ()=>{
+    canvasContainer.addEventListener("touchend", () => {
         clearInterval(holdingTimer)
-        if(gameActive){
-            if(holding){
+        if (gameActive) {
+            if (holding) {
                 softFallEnd();
-            } else{
+            } else {
                 hardFall();
             }
         }
@@ -440,11 +491,16 @@ window.addEventListener("load", ()=>{
     })
 })
 
-
-function drawBlocks(ctx, blocks, size){
-    for (let i = 0; i < blocks.length; i++){
-        for (let j = 0; j < blocks[i].length; j++){
-            if(blocks[i][j] !== null){
+/**
+ * Draws all blocks in the specified list. Gives empty blocks a light grey outline
+ * @param {*} ctx current drawing context
+ * @param {*} blocks 2d array of static blocks
+ * @param {Number} size the size of each tile in px
+ */
+function drawBlocks(ctx, blocks, size) {
+    for (let i = 0; i < blocks.length; i++) {
+        for (let j = 0; j < blocks[i].length; j++) {
+            if (blocks[i][j] !== null) {
                 blocks[i][j].draw(ctx, size, 2)
             } else {
                 Block.draw(ctx, size, 2, i, j, "rgba(0, 0, 0, 0)", "rgb(50, 50, 50)")
@@ -453,43 +509,68 @@ function drawBlocks(ctx, blocks, size){
     }
 }
 
-function clearScreen(c, ctx){
+/**
+ * Clears the screen, to be run every frame
+ * @param {*} c canvas element
+ * @param {*} ctx drawing context
+ */
+function clearScreen(c, ctx) {
     ctx.clearRect(0, 0, c.width, c.height);
 }
 
-function checkRows(blocks){
+/**
+ * checks rows to see if any are completely filled and should be removed
+ * @param {*} blocks 2d array of static blocks
+ * @returns List of row indices to remove
+ */
+function checkRows(blocks) {
     let toRemove = [];
-    for(let i = 0; i < blocks.length; i++){
+    for (let i = 0; i < blocks.length; i++) {
         let remove = true;
-        for(let j = 0; j < blocks[i].length; j++){
-            if(blocks[i][j] === null){
+        for (let j = 0; j < blocks[i].length; j++) {
+            if (blocks[i][j] === null) {
                 remove = false;
                 break;
             }
         }
-        if(remove){
+        if (remove) {
             toRemove.push(i)
         }
     }
     return toRemove
 }
 
-function removeRows(blocks, rows){
-    for (const row of rows){
+/**
+ * removes all rows from the blocks in the specified list
+ * @param {*} blocks 2d array of static blocks
+ * @param {*} rows List of row indices to remove
+ */
+function removeRows(blocks, rows) {
+    for (const row of rows) {
         removeRow(blocks, row)
     }
     fixDisplayRows(blocks)
 }
 
-function removeRow(blocks, row){
+/**
+ * Removes a single row from the blocks list and shifts everything after down
+ * @param {*} blocks 2d array of static blocks
+ * @param {Number} row row index to remove
+ */
+function removeRow(blocks, row) {
     blocks.splice(row, 1)
     blocks.unshift(new Array(blocks[0].length).fill(null));
 }
 
-function fixDisplayRows(blocks){
-    for(let i = 0; i < blocks.length; i++){
-        for(let j = 0; j < blocks[i].length; j++){
-            if(blocks[i][j] !== null){
+/**
+ * Makes all the blocks drawing coordinates line up with their position in the blocks matrix.
+ * Used after removing rows from the blocks matrix.
+ * @param {*} blocks 2d array of static blocks
+ */
+function fixDisplayRows(blocks) {
+    for (let i = 0; i < blocks.length; i++) {
+        for (let j = 0; j < blocks[i].length; j++) {
+            if (blocks[i][j] !== null) {
                 blocks[i][j].row = i;
                 blocks[i][j].col = j;
             }
